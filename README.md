@@ -6,7 +6,7 @@ This template can be used to quickly start a new custom composite-run-steps acti
 - Readme
   - [ ] Update the Inputs section with the correct action inputs
   - [ ] Update the Outputs section with the correct action outputs
-  - [ ] Update the Example section with the correct usage   
+  - [ ] Update the Example section with the correct usage
 - action.yml
   - [ ] Fill in the correct name, description, inputs and outputs and implement steps
 - CODEOWNERS
@@ -38,19 +38,21 @@ This template can be used to quickly start a new custom composite-run-steps acti
     | pagerduty       | For actions related to PagerDuty         |
     | test            | For actions related to testing           |
     | tf              | For actions related to Terraform         |
-  - [ ] Add any additional topics for an action if they apply    
-    
+  - [ ] Add any additional topics for an action if they apply
+
 
 ## Inputs
-| Parameter | Is Required | Description           |
-| --------- | ----------- | --------------------- |
-| `input-1` | true        | Description goes here |
-| `input-2` | false       | Description goes here |
 
-## Outputs
-| Output     | Description           |
-| ---------- | --------------------- |
-| `output-1` | Description goes here |
+| Parameter                     | Is Required | Description                                                                                           |
+| ----------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
+| `service-name`                | true        | The name of the Windows service to register                                                           |
+| `deployment-path`             | true        | The local path on the remote machine to the service executable, i.e. c:\service_directory\service.exe |
+| `server`                      | true        | The name of the target server, i.e. machine.domain.com or 10.10.10.1                                  |
+| `service-credential-user`     | false       | The service credential user name, i.e. domain\user_id                                                 |
+| `service-credential-password` | false       | The service credential password                                                                       |
+| `service-account-id`          | true        | The service account name to log into the server to perform operation                                  |
+| `service-account-password`    | true        | The service account password to log into the server to perform operation                              |
+| `server-public-key`           | true        | Path to remote server public ssl key                                                                  |
 
 ## Example
 

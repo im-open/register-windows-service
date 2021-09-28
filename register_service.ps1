@@ -36,6 +36,8 @@ $script = {
     # Only set this up if it hasn't been set up yet
     $exists = Get-Service -Name $Using:service_name -ErrorAction 'SilentlyContinue'
 
+    Write-Host "Serivce Exists: $exists"
+
     if (!$exists) {
         $credentials = if ([string]::IsNullOrEmpty($Using:service_user)) `
         { New-Object -typename System.Management.Automation.PSCredential -argumentlist "NT AUTHORITY\LOCAL SYSTEM" } `

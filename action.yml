@@ -13,11 +13,11 @@ inputs:
     description: 'The name of the target server, i.e. machine.domain.com or 10.10.10.1'
     required: true
   service-credential-user:
-    description: The service credential user name, i.e. domain\user_id
+    description: 'The service credential user name, i.e. domain\user_id, defaults to "NT AUTHORITY\LOCAL SYSTEM"'
     required: false
     default: 'NT AUTHORITY\LOCAL SYSTEM'
   service-credential-password:
-    description: The service credential password
+    description: 'The service credential password, this can be omitted if local system account is intended'
     required: false
     default: "THIS_WON'T_GET_USED"
   service-account-id:

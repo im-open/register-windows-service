@@ -24,6 +24,7 @@ Write-Output $display_action
 
 $credential = [PSCredential]::new($user_id, $password)
 $so = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
+$session = New-PSSession $server -SessionOption $so -UseSSL -Credential $credential
 
 Write-Output "Importing remote server cert..."
 Import-Certificate -Filepath $cert_path -CertStoreLocation 'Cert:\LocalMachine\Root'
@@ -36,25 +37,27 @@ $script = {
     # Only set this up if it hasn't been set up yet
     $exists = Get-Service -Name $Using:service_name -ErrorAction 'SilentlyContinue'
 
-    Write-Host "Serivce Exists: $exists"
-
     if (!$exists) {
-        $credentials = if ([string]::IsNullOrEmpty($Using:service_user)) `
-        { New-Object -typename System.Management.Automation.PSCredential -argumentlist "NT AUTHORITY\LOCAL SYSTEM" } `
-            else { New-Object -typename System.Management.Automation.PSCredential ($Using:service_user, $Using:service_password) }
+        $the_host = hostname
+        $serviceUserId = if (($Using:service_user).Contains('\')) {
+            $Using:service_user
+        }
+        else { "$the_host\$Using:service_user" }
+
+        New-Object -typename System.Management.Automation.PSCredential -ArgumentList $serviceUserId, $Using:service_password
 
         New-Service -BinaryPathName $Using:deployment_path `
             -Name $Using:service_name `
             -DisplayName $Using:service_name `
-            -Credential $credentials `
+            -Credential $service_credentials `
             -StartupType Automatic
+
+        net start $Using:service_name
     }
 }
 
-Invoke-Command -ComputerName $server `
-    -Credential $credential `
-    -UseSSL `
-    -SessionOption $so `
+Invoke-Command `
+    -Session $session `
     -ScriptBlock $script
 
 Write-Output "$display_action_past_tense."

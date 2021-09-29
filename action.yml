@@ -15,9 +15,11 @@ inputs:
   service-credential-user:
     description: The service credential user name, i.e. domain\user_id
     required: false
+    default: 'NT AUTHORITY\LOCAL SYSTEM'
   service-credential-password:
     description: The service credential password
     required: false
+    default: "THIS_WON'T_GET_USED"
   service-account-id:
     description: 'The service account name to log into the server to perform operation'
     required: true
@@ -35,8 +37,9 @@ runs:
       id: action
       shell: powershell
       run: |
-        $secure_password = ConvertTo-SecureString -String "${{ inputs.service-account-password }}" -AsPlainText -Force
         $service_credential_password = ConvertTo-SecureString -String "${{ inputs.service-credential-password }}" -AsPlainText -Force
+        $secure_password = ConvertTo-SecureString -String "${{ inputs.service-account-password }}" -AsPlainText -Force
+
         ${{ github.action_path }}/register_service.ps1 `
           -service_name '${{ inputs.service-name }}' `
           -deployment_path '${{ inputs.deployment-path }}' `

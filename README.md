@@ -7,21 +7,23 @@ This action registers a windows service on a remote windows machine.
 - [Inputs](#inputs)
 - [Prerequisites](#prerequisites)
 - [Example](#example)
+- [Contributing](#contributing)
+  - [Incrementing the Version](#incrementing-the-version)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
 ## Inputs
 
-| Parameter                     | Is Required | Description                                                                                           |
-| ----------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
-| `service-name`                | true        | The name of the Windows service to register                                                           |
-| `deployment-path`             | true        | The local path on the remote machine to the service executable, i.e. c:\service_directory\service.exe |
-| `server`                      | true        | The name of the target server, i.e. machine.domain.com or 10.10.10.1                                  |
-| `service-credential-user`     | false       | The service credential user name, i.e. domain\user_id, defaults to "NT AUTHORITY\LOCAL SYSTEM"        |
-| `service-credential-password` | false       | The service credential password, this can be omitted if local system account is intended              |
-| `service-account-id`          | true        | The service account name to log into the server to perform operation                                  |
-| `service-account-password`    | true        | The service account password to log into the server to perform operation                              |
-| `server-public-key`           | true        | Path to remote server public ssl key                                                                  |
+| Parameter                     | Is Required | Description                                                                                                      |
+| ----------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| `service-name`                | true        | The name of the Windows service to register                                                                      |
+| `deployment-path`             | true        | The local path on the remote machine to the service executable, i.e. c:\service_directory\service.exe            |
+| `server`                      | true        | The name of the target server, i.e. machine.domain.com or 10.10.10.1                                             |
+| `service-credential-user`     | false       | The service credential user name, i.e. domain\user_id, defaults to "NT AUTHORITY\LOCAL SYSTEM"                   |
+| `service-credential-password` | false       | The service credential password, this can be omitted if local system account is intended                         |
+| `service-account-id`          | true        | The service account name to log into the server to perform operation                                             |
+| `service-account-password`    | true        | The service account password to log into the server to perform operation                                         |
+| `server-cert-path`            | false       | Path to remote server public ssl cert, only necessary if the cert is not already installed on the actions runner |
 
 ## Prerequisites
 
@@ -71,7 +73,6 @@ env:
   SERVICE_PATH: 'c:\\services\\deploy'
   WINDOWS_SERVER_SERVICE_USER: 'server_service_user'
   WINDOWS_SERVER_SERVICE_PASSWORD: '${{ secrets.SERVER_SERVICE_SECRET }}'
-  WINDOWS_SERVER_CERT_PATH: './server-connection-cert.pfx'
 
 jobs:
   Deploy-Service:
@@ -82,14 +83,13 @@ jobs:
       - name: Register Service
         id: register
         if: steps.deploy.outcome == 'success'
-        uses: im-open/register-windows-service@v1.0.1
+        uses: im-open/register-windows-service@v2.0.0
         with:
           service-name: '${{ env.SERVICE_NAME }}'
           deployment-path: '${{ env.SERVICE_PATH }}\\win-service.exe'
           server: '${{ env.WINDOWS_SERVER }}'
           service-account-id: '${{ env.WINDOWS_SERVER_SERVICE_USER }}'
           service-account-password: '${{ env.WINDOWS_SERVER_SERVICE_PASSWORD }}'
-          server-public-key: '${{ env.WINDOWS_SERVER_CERT_PATH }}'
 
       ...
 ```

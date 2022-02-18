@@ -7,6 +7,8 @@ This action registers a windows service on a remote windows machine.
 - [Inputs](#inputs)
 - [Prerequisites](#prerequisites)
 - [Example](#example)
+- [Contributing](#contributing)
+  - [Incrementing the Version](#incrementing-the-version)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
@@ -21,7 +23,6 @@ This action registers a windows service on a remote windows machine.
 | `service-credential-password` | false       | The service credential password, this can be omitted if local system account is intended              |
 | `service-account-id`          | true        | The service account name to log into the server to perform operation                                  |
 | `service-account-password`    | true        | The service account password to log into the server to perform operation                              |
-| `server-public-key`           | true        | Path to remote server public ssl key                                                                  |
 
 ## Prerequisites
 
@@ -71,7 +72,6 @@ env:
   SERVICE_PATH: 'c:\\services\\deploy'
   WINDOWS_SERVER_SERVICE_USER: 'server_service_user'
   WINDOWS_SERVER_SERVICE_PASSWORD: '${{ secrets.SERVER_SERVICE_SECRET }}'
-  WINDOWS_SERVER_CERT_PATH: './server-connection-cert.pfx'
 
 jobs:
   Deploy-Service:
@@ -82,14 +82,13 @@ jobs:
       - name: Register Service
         id: register
         if: steps.deploy.outcome == 'success'
-        uses: im-open/register-windows-service@v1.0.1
+        uses: im-open/register-windows-service@v2.0.0
         with:
           service-name: '${{ env.SERVICE_NAME }}'
           deployment-path: '${{ env.SERVICE_PATH }}\\win-service.exe'
           server: '${{ env.WINDOWS_SERVER }}'
           service-account-id: '${{ env.WINDOWS_SERVER_SERVICE_USER }}'
           service-account-password: '${{ env.WINDOWS_SERVER_SERVICE_PASSWORD }}'
-          server-public-key: '${{ env.WINDOWS_SERVER_CERT_PATH }}'
 
       ...
 ```

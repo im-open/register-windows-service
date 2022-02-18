@@ -26,10 +26,6 @@ inputs:
   service-account-password:
     description: 'The service account password to log into the server to perform operation'
     required: true
-  server-cert-path:
-    description: 'Path to remote server public ssl cert, only necessary if the cert is not already installed on the actions runner'
-    required: false
-    default: ''
 
 runs:
   using: 'composite'
@@ -48,5 +44,4 @@ runs:
           -service_user '${{ inputs.service-credential-user }}' `
           -service_password $service_credential_password `
           -user_id '${{ inputs.service-account-id }}' `
-          -password $secure_password `
-          -cert_path '${{ inputs.server-cert-path }}'
+          -password $secure_password

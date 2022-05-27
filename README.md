@@ -82,7 +82,7 @@ jobs:
       - name: Register Service
         id: register
         if: steps.deploy.outcome == 'success'
-        uses: im-open/register-windows-service@v2.0.0
+        uses: im-open/register-windows-service@v2.0.2
         with:
           service-name: '${{ env.SERVICE_NAME }}'
           deployment-path: '${{ env.SERVICE_PATH }}\\win-service.exe'

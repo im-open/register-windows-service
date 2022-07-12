@@ -6,13 +6,13 @@ Param(
     [parameter(Mandatory = $true)]
     [string]$server,
     [parameter(Mandatory = $true)]
-    [string]$service_user,
+    [string]$run_time_id,
     [parameter(Mandatory = $true)]
-    [SecureString]$service_password,
+    [SecureString]$run_time_secret,
     [parameter(Mandatory = $true)]
-    [string]$user_id,
+    [string]$deployment_id,
     [parameter(Mandatory = $true)]
-    [SecureString]$password
+    [SecureString]$deployment_secret
 )
 
 $display_action = 'Register Windows Service'
@@ -20,7 +20,7 @@ $display_action_past_tense = "Windows Service Registered"
 
 Write-Output $display_action
 
-$credential = [PSCredential]::new($user_id, $password)
+$credential = [PSCredential]::new($deployment_id, $deployment_secret)
 $so = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
 $session = New-PSSession $server -SessionOption $so -UseSSL -Credential $credential
 
@@ -34,12 +34,12 @@ $script = {
 
     if (!$exists) {
         $the_host = hostname
-        $serviceUserId = if (($Using:service_user).Contains('\')) {
-            $Using:service_user
+        $serviceUserId = if (($Using:run_time_id).Contains('\')) {
+            $Using:run_time_id
         }
-        else { "$the_host\$Using:service_user" }
+        else { "$the_host\$Using:run_time_id" }
 
-        New-Object -typename System.Management.Automation.PSCredential -ArgumentList $serviceUserId, $Using:service_password
+        $service_credentials = New-Object -typename System.Management.Automation.PSCredential -ArgumentList $serviceUserId, $Using:run_time_secret
 
         New-Service -BinaryPathName $Using:deployment_path `
             -Name $Using:service_name `

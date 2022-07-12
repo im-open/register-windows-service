@@ -14,15 +14,15 @@ This action registers a windows service on a remote windows machine.
 
 ## Inputs
 
-| Parameter                     | Is Required | Description                                                                                           |
-| ----------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
-| `service-name`                | true        | The name of the Windows service to register                                                           |
-| `deployment-path`             | true        | The local path on the remote machine to the service executable, i.e. c:\service_directory\service.exe |
-| `server`                      | true        | The name of the target server, i.e. machine.domain.com or 10.10.10.1                                  |
-| `service-credential-user`     | false       | The service credential user name, i.e. domain\user_id, defaults to "NT AUTHORITY\LOCAL SYSTEM"        |
-| `service-credential-password` | false       | The service credential password, this can be omitted if local system account is intended              |
-| `service-account-id`          | true        | The service account name to log into the server to perform operation                                  |
-| `service-account-password`    | true        | The service account password to log into the server to perform operation                              |
+| Parameter           | Is Required | Description                                                                                             |
+| ------------------- | ----------- | ------------------------------------------------------------------------------------------------------- |
+| `service-name`      | true        | The name of the Windows service to register                                                             |
+| `deployment-path`   | true        | The local path on the remote machine to the service executable, i.e. `c:\service_directory\service.exe` |
+| `server`            | true        | The name of the target server, i.e. `machine.domain.com` or `10.10.10.1`                                |
+| `run-time-id`       | false       | The run-time service credential user id, i.e. `domain\user_id`, defaults to `NT AUTHORITY\LOCAL SYSTEM` |
+| `run-time-secret`   | false       | The run-time service credential secret, this can be omitted if local system account is going to be used |
+| `deployment-id`     | true        | The deployment service account id to log into the server to register the service                        |
+| `deployment-secret` | true        | The deployment service account secret to log into the server to register the service                    |
 
 ## Prerequisites
 
@@ -67,11 +67,13 @@ Prep the remote Windows server to accept WinRM management calls.  In general the
 ...
 
 env:
-  WINDOWS_SERVER: 'win-server.domain.com'
   SERVICE_NAME: 'deploy-service'
-  SERVICE_PATH: 'c:\\services\\deploy'
-  WINDOWS_SERVER_SERVICE_USER: 'server_service_user'
-  WINDOWS_SERVER_SERVICE_PASSWORD: '${{ secrets.SERVER_SERVICE_SECRET }}'
+  DEPLOYMENT_PATH: 'c:\services\deploy\win-service.exe'
+  SERVER: 'win-server.domain.com'
+  RUN_TIME_ID: 'run_time_id'
+  RUN_TIME_SECRET: '${{ secrets.run_time_secret }}'
+  DEPLOYMENT_ID: 'deployment_id'
+  DEPLOYMENT_SECRET: '${{ secrets.deployment_secret }}'
 
 jobs:
   Deploy-Service:
@@ -82,13 +84,15 @@ jobs:
       - name: Register Service
         id: register
         if: steps.deploy.outcome == 'success'
-        uses: im-open/register-windows-service@v2.0.2
+        uses: im-open/register-windows-service@v3.0.0
         with:
           service-name: '${{ env.SERVICE_NAME }}'
-          deployment-path: '${{ env.SERVICE_PATH }}\\win-service.exe'
-          server: '${{ env.WINDOWS_SERVER }}'
-          service-account-id: '${{ env.WINDOWS_SERVER_SERVICE_USER }}'
-          service-account-password: '${{ env.WINDOWS_SERVER_SERVICE_PASSWORD }}'
+          deployment-path: '${{ env.DEPLOYMENT_PATH }}'
+          server: '${{ env.SERVER }}'
+          run-time-id: '${{ env.RUN_TIME_ID }}'
+          run-time-secret: '${{ env.RUN_TIME_SECRET }}'
+          deployment-id: '${{ env.DEPLOYMENT_ID }}'
+          deployment-secret: '${{ env.DEPLOYMENT_SECRET }}'
 
       ...
 ```

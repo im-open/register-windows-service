@@ -12,19 +12,19 @@ inputs:
   server:
     description: 'The name of the target server, i.e. machine.domain.com or 10.10.10.1'
     required: true
-  service-credential-user:
-    description: 'The service credential user name, i.e. domain\user_id, defaults to "NT AUTHORITY\LOCAL SYSTEM"'
+  run-time-id:
+    description: 'The run-time service credential user id, i.e. "domain\user_id", defaults to "NT AUTHORITY\LOCAL SYSTEM"'
     required: false
     default: 'NT AUTHORITY\LOCAL SYSTEM'
-  service-credential-password:
-    description: 'The service credential password, this can be omitted if local system account is intended'
+  run-time-secret:
+    description: 'The run-time service credential secret, this can be omitted if local system account is going to be used'
     required: false
     default: "THIS_WON'T_GET_USED"
-  service-account-id:
-    description: 'The service account name to log into the server to perform operation'
+  deployment-id:
+    description: 'The deployment service account id to log into the server to register the service'
     required: true
-  service-account-password:
-    description: 'The service account password to log into the server to perform operation'
+  deployment-secret:
+    description: 'The deployment service account secret to log into the server to register the service'
     required: true
 
 runs:
@@ -34,21 +34,21 @@ runs:
       id: action
       shell: powershell
       run: |
-        $service_password_string = @'
-        ${{ inputs.service-credential-password }}
+        $run_time_secret_string = @'
+        ${{ inputs.run-time-secret }}
         '@
-        $service_credential_password = ConvertTo-SecureString -String $service_password_string -AsPlainText -Force
+        $run_time_secret_secure_string = ConvertTo-SecureString -String $run_time_secret_string -AsPlainText -Force
 
-        $deployment_password_string = @'
-        ${{ inputs.service-account-password }}
+        $deployment_secret_string = @'
+        ${{ inputs.deployment-secret }}
         '@
-        $secure_password = ConvertTo-SecureString -String $deployment_password_string -AsPlainText -Force
+        $deployment_secret_secure_string = ConvertTo-SecureString -String $deployment_secret_string -AsPlainText -Force
 
         ${{ github.action_path }}/register_service.ps1 `
           -service_name '${{ inputs.service-name }}' `
           -deployment_path '${{ inputs.deployment-path }}' `
           -server '${{ inputs.server }}' `
-          -service_user '${{ inputs.service-credential-user }}' `
-          -service_password $service_credential_password `
-          -user_id '${{ inputs.service-account-id }}' `
-          -password $secure_password
+          -run_time_id '${{ inputs.run-time-id }}' `
+          -run_time_secret $run_time_secret_secure_string `
+          -deployment_id '${{ inputs.deployment-id }}' `
+          -deployment_secret $deployment_secret_secure_string

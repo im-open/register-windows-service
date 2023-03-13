@@ -84,7 +84,8 @@ jobs:
       - name: Register Service
         id: register
         if: steps.deploy.outcome == 'success'
-        uses: im-open/register-windows-service@v3.0.0
+        # You may also reference the major or major.minor version
+        uses: im-open/register-windows-service@v3.0.1
         with:
           service-name: '${{ env.SERVICE_NAME }}'
           deployment-path: '${{ env.DEPLOYMENT_PATH }}'

@@ -29,7 +29,7 @@ This action registers a windows service on a remote windows machine.
 
 ## Prerequisites
 
-The register windows service action uses Web Services for Management, [WSMan], and Windows Remote Management, [WinRM], to create remote administrative sessions. Because of this, Windows OS GitHubs Actions Runners, `runs-on: [windows-2019]`, must be used. If the file deployment target is on a local network that is not publicly available, then specialized self hosted runners, `runs-on: [self-hosted, windows-2019]`,  will need to be used to broker deployment time access.
+The register windows service action uses Web Services for Management, [WSMan], and Windows Remote Management, [WinRM], to create remote administrative sessions. Because of this, Windows OS GitHubs Actions Runners, `runs-on: im-windows`, must be used. If the file deployment target is on a local network that is not publicly available, then specialized self hosted runners, `runs-on: im-windows`,  will need to be used to broker deployment time access.
 
 Inbound secure WinRm network traffic (TCP port 5986) must be allowed from the GitHub Actions Runners virtual network so that remote sessions can be received.
 
@@ -80,7 +80,7 @@ env:
 
 jobs:
   Deploy-Service:
-    runs-on: [windows-2019]
+    runs-on: im-windows
     steps:
       ...
 
